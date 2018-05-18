@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}
+Home
+{% endblock title %}
+{% block content %}
+{% for ms in music %}
+<p>{{ms.tenbai}}</p>
+<audio controls>
+        <source src="https://docs.google.com/uc?export=download&id={{ms.ma}}" type="audio/mpeg">
+      Trình duyệt của bạn không hỗ trợ HTML5
+</audio>
+{% endfor %}
+
+
+{% endblock content %}
