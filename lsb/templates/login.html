@@ -6,7 +6,10 @@
 <form action="" method="POST">
     {% csrf_token %}
     {{form.as_p}}
-    <input type="submit" value="Đăng nhập"/>
+    <input type="submit" name="id" value="Đăng nhập"/>
+</form>
+<form action="" method="get">
+    <input type="submit" name="dangki" value="Đăng kí"/>
 </form>
 
 {% endblock content %}nhập

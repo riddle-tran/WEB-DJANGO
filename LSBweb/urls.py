@@ -16,17 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from lsb import views as viewslsb
-from lsb import auth as views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', viewslsb.home),
-    url(r'^123$', viewslsb.logout),
     url(r'^login$', viewslsb.login),
     url(r'^dangki$', viewslsb.dangki ),
     url(r'^nhaccuatui$',viewslsb.nhaccuatui ),
     url(r'^logout$', viewslsb.logout),
-    url(r'oauth2callback$',views.oauth2callback),
-    url(r'oauth/$',views.oauth),
-    url(r'^index/$', views.index),
-
 ]

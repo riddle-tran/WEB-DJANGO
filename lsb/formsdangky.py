@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from .models import Username
-from .auth import createFolder
+from .api import createFolder
 import re
 from django.core.exceptions import ObjectDoesNotExist
 class dangky(forms.Form):
@@ -28,6 +28,9 @@ class dangky(forms.Form):
             return user
         raise forms.ValidationError('User đã tồn tại!')
     def save(self):
-        Username.objects.create(user=self.cleaned_data['user'], password=self.cleaned_data['pw'],email=self.cleaned_data['email'])
-        createFolder(self.cleaned_data['user'])
+        try:
+            createFolder(self.cleaned_data['user'])
+            Username.objects.create(user=self.cleaned_data['user'], password=self.cleaned_data['pw'],email=self.cleaned_data['email'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError('User đã tồn tại !')
         

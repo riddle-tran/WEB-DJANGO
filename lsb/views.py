@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.shortcuts import render
-from .models import Danhmuc,Music,Musicid
+from .models import Danhmuc,Music,Musicid,Forder
 from .formsdangky import dangky
 from .formlogin import dangnhap
 from django.http import HttpResponseRedirect,HttpResponse
-from . import auth
+from . import api
 # Create your views here.
 def home(request):
     danhmuc=Danhmuc.objects.all()
@@ -16,18 +15,28 @@ def home(request):
         'music':music,
     }
     if request.method == 'POST':
-        
-        return HttpResponseRedirect("/nhaccuatui/")
+        if 'user' in request.session:
+            user = request.session['user']
+            id =request.POST.get('id')
+            tenbai=(Music.objects.get(ma=id)).tenbai
+            forder=(Forder.objects.get(user=user)).ma
+            api.downloadFile(id,tenbai,user,forder)
+            return HttpResponseRedirect("/nhaccuatui")
+        else:
+            return HttpResponseRedirect("/login")
     
     return render(request,'home.html',context)
 def login(request):
     danhmuc=Danhmuc.objects.all()
     form = dangnhap()
     if request.method == 'POST':
-        form=dangnhap(request.POST)
-        if form.is_valid():
-            request.session['user']=form.kt()
-            return HttpResponseRedirect('/')
+            form=dangnhap(request.POST)
+            if form.is_valid():
+                request.session['user']=form.kt()
+                return HttpResponseRedirect('/')
+    if request.method == 'GET':            
+        if request.GET.get('dangki'):
+                return HttpResponseRedirect('/dangki')
     context = {
         'danhmuc':danhmuc,
         'form':form,

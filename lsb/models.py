@@ -2,11 +2,6 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from oauth2client.contrib.django_util.models import CredentialsField
-
-class CredentialsModel(models.Model):
-    id = models.AutoField(primary_key=True)
-    cred = CredentialsField()
 # Create your models here.
 class Username(models.Model):
     user = models.CharField(max_length=40, primary_key=True)
@@ -22,7 +17,6 @@ class Music(models.Model):
         return self.tenbai
 
 class Musicid(models.Model):
-    id = models.AutoField(primary_key=True)
     user = models.CharField(max_length=40)
     tenbai = models.CharField(max_length=250)
     ma= models.CharField(max_length=100)

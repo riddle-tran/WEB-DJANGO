@@ -3,13 +3,16 @@
 Nhạc của tui
 {% endblock title %}
 {% block content %}
-{% for ms in music %}
-<p>{{ms.tenbai}}</p>
-<audio controls>
-        <source src="https://docs.google.com/uc?export=download&id={{ms.ma}}" type="audio/mpeg">
-      Trình duyệt của bạn không hỗ trợ HTML5
-</audio>
+<table>
+  {% for ms in music %}
+<tr>
+<td>{{ms.tenbai}}</td>
+<td>
+  <audio controls>
+    <source src="https://docs.google.com/uc?export=download&id={{ms.ma}}" type="audio/mpeg">
+  </audio>
+</td>
+</tr>
 {% endfor %}
-
-
+</table>
 {% endblock content %}
