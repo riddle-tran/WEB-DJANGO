@@ -6,6 +6,7 @@ from apiclient.http import MediaFileUpload, MediaIoBaseDownload
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Music,Forder,Username,Musicid
 import os,io
+import lsb_hiding
 # Setup the Drive v3 API
 SCOPES = 'https://www.googleapis.com/auth/drive'
 store = file.Storage('credentials.json')
@@ -59,6 +60,6 @@ def downloadFile(file_id,filename,user, folder_id):
         with io.open(filepath,'wb') as f:
             fh.seek(0)
             f.write(fh.read())
-        #lsb_watermark(filename, user, filename)
+        lsb_hiding.lsb_watermark(filepath, user, filepath)
         uploadFile(filename,user,folder_id)
-
+        os.remove(filepath)

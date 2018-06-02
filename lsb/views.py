@@ -6,6 +6,8 @@ from .formsdangky import dangky
 from .formlogin import dangnhap
 from django.http import HttpResponseRedirect,HttpResponse
 from . import api
+from .formUpdate import UploadFileForm
+from .lsb_hiding import recover_lsb_watermark
 # Create your views here.
 def home(request):
     danhmuc=Danhmuc.objects.all()
@@ -72,3 +74,27 @@ def dangki(request):
         'form':form,
     }
     return render(request,'dangki.html',context)
+def list(request):
+    api.listFiles()
+    return HttpResponseRedirect('/')
+def kiemtra(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            a=request.FILES['file']
+            upload(a)
+            a=recover_lsb_watermark(a.name)
+            context = {
+                'code':a,
+            }
+            return render(request, 'kiemtra.html', context)
+        else:
+            return HttpResponse("<h2>File uploaded not successful!</h2>")
+ 
+    form = UploadFileForm()
+    return render(request, 'kiemtra.html', {'form':form})
+
+def upload(f): 
+    file = open(f.name, 'wb+') 
+    for chunk in f.chunks():
+        file.write(chunk)

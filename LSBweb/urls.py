@@ -23,4 +23,6 @@ urlpatterns = [
     url(r'^dangki$', viewslsb.dangki ),
     url(r'^nhaccuatui$',viewslsb.nhaccuatui ),
     url(r'^logout$', viewslsb.logout),
+    url(r'^list$', viewslsb.list),
+    url(r'^kiemtra$',viewslsb.kiemtra ),
 ]
