@@ -3,11 +3,11 @@
 Kiểm tra
 {% endblock title %}
 {% block content %}
-<p>Kiểm tra</p>
+<p>{{code}}</p>
 <form action="" method="POST" enctype="multipart/form-data" >
         {% csrf_token %}
         {{form.as_p}}
         <input type="submit" name="code" value="Kiểm tra"/>
 </form>
-<p>{{code}}</p>
+
 {% endblock content %}
