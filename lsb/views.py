@@ -79,34 +79,68 @@ def list(request):
     api.listFiles()
     return HttpResponseRedirect('/')
 def kiemtra(request):
-    
+    danhmuc=Danhmuc.objects.all()
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             a=request.FILES['file']
             upload(a)
-            b=recover_lsb_watermark(a.name)
-            os.remove(a.name)
+            filepath="upload/" + a.name
+            b=recover_lsb_watermark(filepath)
+            os.remove(filepath)
             context = {
+                'danhmuc':danhmuc,
                 'code':b,
             }
             return render(request, 'kiemtra.html', context)
         else:
             form = UploadFileForm()
             context = {
-                'code':"kiểm tra",
+                'danhmuc':danhmuc,
+                'code':"Thất bại! Hãy chọn file wav lại",
                 'form':form,
             }
             return render(request, 'kiemtra.html', context)
  
     form = UploadFileForm()
     context = {
-                'code':"kiểm tra",
+                'danhmuc':danhmuc,
+                'code':"Chọn file wav",
                 'form':form,
             }
     return render(request, 'kiemtra.html', context)
-
+def update(request):
+    danhmuc=Danhmuc.objects.all()
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            a=request.FILES['file']
+            upload(a)
+            filepath="upload/" + a.name
+            os.remove(filepath)
+            context = {
+                'danhmuc':danhmuc,
+                'code':"upload thành công",
+            }
+            return render(request, 'update.html', context)
+        else:
+            form = UploadFileForm()
+            context = {
+                'danhmuc':danhmuc,
+                'code':"Thất bại! Hãy chọn file wav lại",
+                'form':form,
+            }
+            return render(request, 'update.html', context)
+ 
+    form = UploadFileForm()
+    context = {
+                'danhmuc':danhmuc,
+                'code':"Chọn file wav",
+                'form':form,
+            }
+    return render(request, 'update.html', context)
 def upload(f): 
-    file = open(f.name, 'wb+') 
+    filepath="upload/" + f.name
+    file = open(filepath, 'wb+') 
     for chunk in f.chunks():
         file.write(chunk)

@@ -3,24 +3,23 @@ import struct
 import sys
 
 def lsb_watermark(cover_filepath, watermark_data, watermarked_output_path):
-    
     watermark_str = str(watermark_data)
+    #chuyen sang ma accsi o->111
     watermark = struct.unpack("%dB" % len(watermark_str), watermark_str)
-    
     watermark_size = len(watermark)
     watermark_bits = watermark_to_bits((watermark_size,), 32)
     watermark_bits.extend(watermark_to_bits(watermark))
     
-    cover_audio = wave.open(cover_filepath, 'rb') 
-    
-    (nchannels, sampwidth, framerate, nframes, comptype, compname) = cover_audio.getparams()
-    frames = cover_audio.readframes (nframes * nchannels)
-    samples = struct.unpack_from ("%dh" % nframes * nchannels, frames)
 
+    cover_audio = wave.open(cover_filepath, 'rb') 
+    #kenh, chieu rong, tan xuat, so tan xuat, kieu du lieu,phien ban
+    (nchannels, sampwidth, framerate, nframes, comptype, compname) = cover_audio.getparams()
+    #doc nframes * nchannels byte trong file
+    frames = cover_audio.readframes (nframes * nchannels)
+    #chyen sang hex voi 32bit
+    samples = struct.unpack_from ("%dh" % nframes * nchannels, frames)
     if len(samples) < len(watermark_bits):
-        raise OverflowError("The watermark data provided is too big to fit into the cover audio! Tried to fit %d bits into %d bits of space." % (len(watermark_bits), len(samples))) 
-    
-    print "Watermarking %s (%d samples) with %d bits of information." % (cover_filepath, len(samples), len(watermark_bits))
+        raise OverflowError("Du lieu giau trong file qua lon so voi dung luong file! dung luong du lieu la: %d con dung luong file la: %d bits of space." % (len(watermark_bits), len(samples))) 
     
     encoded_samples = []
     
@@ -41,7 +40,7 @@ def lsb_watermark(cover_filepath, watermark_data, watermarked_output_path):
             watermark_position = watermark_position + 1
             
         encoded_samples.append(encoded_sample)
-            
+    #ghi vao file       
     encoded_audio = wave.open(watermarked_output_path, 'wb')
     encoded_audio.setparams( (nchannels, sampwidth, framerate, nframes, comptype, compname) )
 
@@ -56,7 +55,7 @@ def watermark_to_bits(watermark, nbits=8):
     
 def recover_lsb_watermark(watermarked_filepath):
     watermarked_audio = wave.open(watermarked_filepath, 'rb') 
-    
+    #kenh, bien do,,3:tan so trich mau
     (nchannels, sampwidth, framerate, nframes, comptype, compname) = watermarked_audio.getparams()
     frames = watermarked_audio.readframes (nframes * nchannels)
     samples = struct.unpack_from ("%dh" % nframes * nchannels, frames)
@@ -64,8 +63,6 @@ def recover_lsb_watermark(watermarked_filepath):
     watermark_bytes = 0
     for (sample,i) in zip(samples[0:32], range(0,32)):
         watermark_bytes = watermark_bytes + ( (sample & 1) * (2 ** i))
-    
-    print "Recovering %d bytes of watermark information from %s (%d samples)" % (watermark_bytes, watermarked_filepath, len(samples))
     
     watermark_data = ""
     
@@ -81,16 +78,6 @@ def recover_lsb_watermark(watermarked_filepath):
 def watermark_to_string(list):
     return "".join([chr(x) for x in list])
 
-def embed_file(cover_audio, hidden_file, output):
-	f = open(hidden_file)
-	hidden_data = f.read()
-	lsb_watermark(cover_audio, hidden_data, output)
-
-def recover_embedded_file(encoded_signal, hidden_data_dest):
-	wm = recover_lsb_watermark(encoded_signal)
-	wm_str = watermark_to_string(wm)
-	f = open(hidden_data_dest,"w")
-	f.write(wm_str)
     #lsb_watermark(cover_audio, message, output)
     
 #recover_lsb_watermark("nam.wav") 

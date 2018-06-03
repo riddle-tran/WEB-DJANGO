@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^logout$', viewslsb.logout),
     url(r'^list$', viewslsb.list),
     url(r'^kiemtra$',viewslsb.kiemtra ),
+    url(r'^update$',viewslsb.update),
 ]
